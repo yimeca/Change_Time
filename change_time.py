@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from tkcalendar import Calendar
+import sys
+from _datetime import datetime
 
 # Classes
 
@@ -10,10 +12,13 @@ class TimeOption(ttk.LabelFrame):
         
         global root
 
-        self.title_var = StringVar
+        self.title_var = StringVar()
         self.title_entry = ttk.Entry(self).grid(column=0, row=0, columnspan=3, pady=10)
 
-        calendar = Calendar(self, year=2023, month=11, day=24).grid(column=0, row=1, rowspan=2)
+        self.date_var = StringVar()
+        self.date_var.set("23/11/2023")
+        self.calendar = Calendar(self, textvariable=self.date_var,
+                                 date_pattern="dd/mm/y").grid(column=0, row=1, rowspan=2)
         
         # Hour
         self.hour_label = ttk.Label(self, text="Hour").grid(column=1, row=1, sticky="s")
@@ -39,14 +44,32 @@ class TimeOption(ttk.LabelFrame):
         self.sec_var.set("00")
 
         # Button
-        self.change_time = ttk.Button(self, text="Change Time", command=self.change_time
+        self.change_time = ttk.Button(self, text="Change Time", command=self.change_time_to_chosen
                                       ).grid(column=4, row=2, columnspan=1)
 
-    def change_time(self):
-        print()
+    def change_time_to_chosen(self):
+        date = self.date_var.get().split("/")
+        time_tuple = (int(date[2]), # Year
+                      int(date[1]), # Month
+                      int(date[0]), # Day
+                      int(self.hour_var.get()) , # Hour
+                      int(self.min_var.get()), # Minute
+                      int(self.sec_var.get()), # Second
+                      0 # Milisecond
+        )
+
         print("change")
+        print(time_tuple)
+        win_change_time(time_tuple)
+        print(self.hour_var.get(), self.min_var.get(), self.sec_var.get(), self.date_var.get())
 
 # Functions
+
+def win_change_time(time_tuple):
+    import win32api
+    dayOfWeek = datetime(*time_tuple).isocalendar()[2]
+    new_time = time_tuple[:2] + (dayOfWeek,) + time_tuple[2:]
+    win32api.SetSystemTime(*new_time)
 
 # Reset Time Function
 def reset_time():
