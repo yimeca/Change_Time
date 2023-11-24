@@ -33,8 +33,15 @@ class TimeOption(ttk.LabelFrame):
         self.min_var.set("00")
 
         # Button
-        self.change_time = ttk.Button(self, text="Change Time").grid(column=3, row=1, columnspan=2)
+        self.change_time = ttk.Button(self, text="Change Time", command=self.change_time).grid(column=3, row=1, columnspan=2)
 
+    def change_time(self):
+        pass
+
+
+# Reset Time Function
+def reset_time():
+    pass
 
 # Main
 
@@ -58,7 +65,8 @@ def main():
     time3 = TimeOption(mainframe, padding="12 12 12 12").grid(row=1, column=0)
     time4 = TimeOption(mainframe, padding="12 12 12 12").grid(row=1, column=1)
 
-    reset = ttk.Button(mainframe, text="Reset Time and Date (Requires internet)").grid(row=3, column=0, columnspan=3)
+    reset = ttk.Button(mainframe, text="Reset Time and Date (Requires internet)", command=reset_time
+                       ).grid(row=3, column=0, columnspan=3)
 
     root.mainloop()
 
