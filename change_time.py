@@ -36,12 +36,12 @@ class TimeOption(ttk.LabelFrame):
         self.change_time = ttk.Button(self, text="Change Time", command=self.change_time).grid(column=3, row=1, columnspan=2)
 
     def change_time(self):
-        pass
+        print("change")
 
 
 # Reset Time Function
 def reset_time():
-    pass
+    print("reset")
 
 # Main
 
