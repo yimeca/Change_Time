@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkcalendar import Calendar
 import sys
 from _datetime import datetime
+import requests
 
 # Classes
 
@@ -73,7 +74,19 @@ def win_change_time(time_tuple):
 
 # Reset Time Function
 def reset_time():
+    timeapi = requests.get("http://worldtimeapi.org/api/timezone/Etc/GMT")
+    tuple_info = timeapi.json()['datetime']
+    year = int(tuple_info[0:4])
+    month = int(tuple_info[5:7])
+    day = int(tuple_info[8:10])
+    hour = int(tuple_info[11:13])
+    minute = int(tuple_info[14:16])
+    second= int(tuple_info[17:19])
+    millisecond = 0
+    api_tuple = (year,month,day,hour,minute,second,millisecond)
+    win_change_time(api_tuple)
     print("reset")
+    print(year,month,day,hour,minute,second,millisecond)
 
 # Main
 
