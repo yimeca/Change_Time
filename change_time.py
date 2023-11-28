@@ -1,5 +1,8 @@
+import ctypes
+import os
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from tkcalendar import Calendar
 import sys
 from _datetime import datetime
@@ -115,5 +118,33 @@ def main():
 
     root.mainloop()
 
+def root_access():
+    """
+    Function to check if the current user has root access or administrative privileges.
+
+    Returns:
+    - bool:
+        True if the user has root access or administrative privileges, False otherwise.
+    """
+
+    # Checking the operating system to determine the appropriate command to check for root access.
+    if sys.platform.startswith('linux') or sys.platform == 'darwin':
+        # On Linux and macOS, we can use the os.geteuid() function to check for root access.
+        return os.geteuid() == 0
+    elif sys.platform == 'win32':
+        # On Windows, we can use the ctypes library to check for administrative privileges.
+        try:
+            import ctypes
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        except ImportError:
+            # If ctypes is not available, we cannot determine root access.
+            return False
+    else:
+        # If the operating system is not supported, we cannot determine root access.
+        return False
+
 if __name__ == "__main__":
-    main()
+    if root_access():
+        main()
+    else:
+        messagebox.showwarning(message="You need admin rights to change the time")
