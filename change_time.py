@@ -1,4 +1,3 @@
-import ctypes
 import os
 from tkinter import *
 from tkinter import ttk
@@ -66,6 +65,22 @@ class TimeOption(ttk.LabelFrame):
         print(time_tuple)
         win_change_time(time_tuple)
         print(self.hour_var.get(), self.min_var.get(), self.sec_var.get(), self.date_var.get())
+    
+    def __str__(self):
+        
+        date = self.date_var.get().split("/")
+        time_tuple = (f"{date[2]:.2}", # Year
+                      f"{date[1]:.2}", # Month
+                      f"{date[0]:.2}", # Day
+                      f"{self.hour_var.get():.2}" , # Hour
+                      f"{self.min_var.get():.2}", # Minute
+                      f"{self.sec_var.get():.2}", # Second
+                      f"00" # Milisecond
+        )
+        time_str = ""
+        for time_number in time_tuple:
+            time_str += time_number
+        return time_str
 
 # Functions
 
@@ -91,6 +106,20 @@ def reset_time():
     print("reset")
     print(year,month,day,hour,minute,second,millisecond)
 
+# On close
+
+def on_close():
+    global time1, time2, time3, time4
+    save_list = []
+    for time_option in [time1, time2, time3, time4]:
+        save_list.append(time_option.__str__())
+    print(save_list)
+    with open("change_time_defaults.txt", "w") as defaults_file:
+        defaults_file.write(str(save_list))
+
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        root.destroy()
+
 # Main
 
 def main():
@@ -104,17 +133,69 @@ def main():
     style = ttk.Style()
     style.theme_use("clam")
 
-    mainframe = ttk.Frame(root, padding="3 3 12 12").grid(column=0, row=0, sticky="nwes")
+    # On close
+
+    root.protocol("WM_DELETE_WINDOW", on_close)
+
+
+    mainframe = ttk.Frame(root, padding="3 3 12 12")
+    mainframe.grid(column=0, row=0, sticky="nwes")
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
-    time1 = TimeOption(mainframe, padding="12 12 12 12").grid(row=0, column=0)
-    time2 = TimeOption(mainframe, padding="12 12 12 12").grid(row=0, column=1)
-    time3 = TimeOption(mainframe, padding="12 12 12 12").grid(row=1, column=0)
-    time4 = TimeOption(mainframe, padding="12 12 12 12").grid(row=1, column=1)
+    global time1, time2, time3, time4
+    time1 = TimeOption(mainframe, padding="12 12 12 12")
+    time1.grid(row=0, column=0)
+    time2 = TimeOption(mainframe, padding="12 12 12 12")
+    time2.grid(row=0, column=1)
+    time3 = TimeOption(mainframe, padding="12 12 12 12")
+    time3.grid(row=1, column=0)
+    time4 = TimeOption(mainframe, padding="12 12 12 12")
+    time4.grid(row=1, column=1)
 
     reset = ttk.Button(mainframe, text="Reset Time and Date (Requires internet)", command=reset_time
                        ).grid(row=3, column=0, columnspan=3)
+    
+    # Set time from defaults
+
+    try:
+        with open("change_time_defaults.txt", "r") as defaults_file:
+            defaults_str = defaults_file.read()
+    except FileNotFoundError:
+        pass
+    else:
+        print("read")
+        print(defaults_str)
+        print("minus first last")
+#        print(defaults_str[2:44])
+#        print(defaults_str[48:90])
+#        print(defaults_str[94:136])
+#        print(defaults_str[140:182])
+        print("hi")
+        defaults_list = [defaults_str[2:16], defaults_str[20:34], defaults_str[38:52], defaults_str[56:70]]
+        print(defaults_list)
+        print("hi")
+
+        times_list = [time1, time2, time3, time4]
+
+        for i, time_option, time_string in zip(range(4), times_list, defaults_list):
+            print(i, time_option, time_string)
+            # Year
+            print(time_string[4:6])
+            # Month
+            print(time_string[2:4])
+            # Day
+            print(time_string[0:2])
+            # Hour
+            print(time_string[6:8])
+            time_option.hour_var.set(time_string[6:8])
+            # Minute
+            print(time_string[8:10])
+            time_option.min_var.set(time_string[8:10])
+            # Second
+            print(time_string[10:12])
+            time_option.sec_var.set(time_string[10:12])
+#            time_option.hour_var.set(defaults_list[2:3])
 
     root.mainloop()
 
