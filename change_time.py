@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkcalendar import Calendar
 import sys
-from _datetime import datetime
+from datetime import datetime
 import requests
 
 # Classes
@@ -68,10 +68,11 @@ class TimeOption(ttk.LabelFrame):
     
     def __str__(self):
         
-        date = self.date_var.get().split("/")
-        time_tuple = (f"{date[2]:.2}", # Year
-                      f"{date[1]:.2}", # Month
-                      f"{date[0]:.2}", # Day
+        date = self.date_var.get()#.split("/")
+        time_tuple = (self.date_var.get(),
+                      #f"{date[2]:.4}", # Year
+                      #f"{date[1]:.2}", # Month
+                      #f"{date[0]:.2}", # Day
                       f"{self.hour_var.get():.2}" , # Hour
                       f"{self.min_var.get():.2}", # Minute
                       f"{self.sec_var.get():.2}", # Second
@@ -110,12 +111,13 @@ def reset_time():
 
 def on_close():
     global time1, time2, time3, time4
-    save_list = []
+#    save_list = []
+    save_str = ""
     for time_option in [time1, time2, time3, time4]:
-        save_list.append(time_option.__str__())
-    print(save_list)
+        save_str += (time_option.__str__() + "\n")
+    print(save_str)
     with open("change_time_defaults.txt", "w") as defaults_file:
-        defaults_file.write(str(save_list))
+        defaults_file.write(save_str)
 
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         root.destroy()
@@ -164,37 +166,39 @@ def main():
     except FileNotFoundError:
         pass
     else:
-        print("read")
+        print("defaults_str")
         print(defaults_str)
-        print("minus first last")
 #        print(defaults_str[2:44])
 #        print(defaults_str[48:90])
 #        print(defaults_str[94:136])
 #        print(defaults_str[140:182])
-        print("hi")
-        defaults_list = [defaults_str[2:16], defaults_str[20:34], defaults_str[38:52], defaults_str[56:70]]
-        print(defaults_list)
-        print("hi")
+#        print("hi")
+        defaults_list = [defaults_str[2:18], defaults_str[24:40], defaults_str[46:62], defaults_str[68:84]]
+#        print(defaults_list)
+#        print("hi")
 
         times_list = [time1, time2, time3, time4]
 
         for i, time_option, time_string in zip(range(4), times_list, defaults_list):
             print(i, time_option, time_string)
-            # Year
-            print(time_string[4:6])
-            # Month
-            print(time_string[2:4])
-            # Day
-            print(time_string[0:2])
+#            # Year
+#            print(time_string[4:8])
+ #           # Month
+ #           print(time_string[2:4])
+ #           # Day
+ #           print(time_string[0:2])
+            # Date
+            print(time_string[0:10])
+            time_option.date_var.set(time_string[0:10])
             # Hour
-            print(time_string[6:8])
-            time_option.hour_var.set(time_string[6:8])
-            # Minute
-            print(time_string[8:10])
-            time_option.min_var.set(time_string[8:10])
-            # Second
             print(time_string[10:12])
-            time_option.sec_var.set(time_string[10:12])
+            time_option.hour_var.set(time_string[10:12])
+            # Minute
+            print(time_string[12:14])
+            time_option.min_var.set(time_string[12:14])
+            # Second
+            print(time_string[14:16])
+            time_option.sec_var.set(time_string[14:16])
 #            time_option.hour_var.set(defaults_list[2:3])
 
     root.mainloop()
