@@ -162,18 +162,19 @@ def main():
 
     try:
         with open("change_time_defaults.txt", "r") as defaults_file:
-            defaults_str = defaults_file.read()
+#            defaults_str = defaults_file.read()
+            defaults_list = defaults_file.readlines()
     except FileNotFoundError:
         pass
     else:
-        print("defaults_str")
-        print(defaults_str)
+        print("defaults_list")
+        print(defaults_list)
 #        print(defaults_str[2:44])
 #        print(defaults_str[48:90])
 #        print(defaults_str[94:136])
 #        print(defaults_str[140:182])
 #        print("hi")
-        defaults_list = [defaults_str[2:18], defaults_str[24:40], defaults_str[46:62], defaults_str[68:84]]
+#        defaults_list = [defaults_str[2:18], defaults_str[24:40], defaults_str[46:62], defaults_str[68:84]]
 #        print(defaults_list)
 #        print("hi")
 
