@@ -16,7 +16,7 @@ class TimeOption(ttk.LabelFrame):
         global root
 
         self.title_var = StringVar()
-        self.title_entry = ttk.Entry(self).grid(column=0, row=0, columnspan=3, pady=10)
+        self.title_entry = ttk.Entry(self, textvariable=self.title_var).grid(column=0, row=0, columnspan=3, pady=10)
 
         self.date_var = StringVar()
         self.date_var.set("23/11/2023")
@@ -76,7 +76,7 @@ class TimeOption(ttk.LabelFrame):
                       f"{self.hour_var.get():.2}" , # Hour
                       f"{self.min_var.get():.2}", # Minute
                       f"{self.sec_var.get():.2}", # Second
-                      f"00" # Milisecond
+                      self.title_var.get(), # Title
         )
         time_str = ""
         for time_number in time_tuple:
@@ -201,6 +201,9 @@ def main():
             print(time_string[14:16])
             time_option.sec_var.set(time_string[14:16])
 #            time_option.hour_var.set(defaults_list[2:3])
+            # Title
+            print(time_string[16:-2])
+            time_option.title_var.set(time_string[16:-1])
 
     root.mainloop()
 
