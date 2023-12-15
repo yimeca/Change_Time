@@ -49,6 +49,10 @@ class TimeOption(ttk.LabelFrame):
         # Button
         self.change_time = ttk.Button(self, text="Change Time", command=self.change_time_to_chosen
                                       ).grid(column=4, row=2, columnspan=1)
+        
+        self.reset_time_option = ttk.Button(self, text="Now",
+                                                      command=self.reset_time_option
+                                                      ).grid(column=4, row=2, sticky="n", columnspan=1)
 
     def change_time_to_chosen(self):
         date = self.date_var.get().split("/")
@@ -65,6 +69,29 @@ class TimeOption(ttk.LabelFrame):
         print(time_tuple)
         win_change_time(time_tuple)
         print(self.hour_var.get(), self.min_var.get(), self.sec_var.get(), self.date_var.get())
+
+    def reset_time_option(self):
+        timeapi = requests.get("http://worldtimeapi.org/api/timezone/Etc/GMT")
+        tuple_info = timeapi.json()['datetime']
+
+        year = int(tuple_info[0:4])
+        month = int(tuple_info[5:7])
+        day = int(tuple_info[8:10])
+        hour = tuple_info[11:13]
+        minute = tuple_info[14:16]
+        second= tuple_info[17:19]
+
+        date = f"{day}/{month}/{year}"
+        
+        self.date_var.set(date)
+        # Hour
+        self.hour_var.set(f"{hour:.2}")
+        # Minute
+        self.min_var.set(f"{minute:.2}")
+        # Second
+        self.sec_var.set(f"{second:.2}")
+        # Title
+        self.title_var.set("")
     
     def __str__(self):
         
