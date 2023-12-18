@@ -1,0 +1,1 @@
+pyInstaller --windowed --onefile --hidden-import=babel.numbers change_time.py
