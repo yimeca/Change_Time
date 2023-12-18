@@ -71,8 +71,9 @@ class TimeOption(ttk.LabelFrame):
         print(self.hour_var.get(), self.min_var.get(), self.sec_var.get(), self.date_var.get())
 
     def reset_time_option(self):
+        global time_zone_var
         try:
-            timeapi = requests.get("http://worldtimeapi.org/api/timezone/Etc/GMT")
+            timeapi = requests.get(f"http://worldtimeapi.org/api/timezone/{time_zone_var.get()}")
         except Exception:
             messagebox.showwarning(message="You need internet for this")
         else:
@@ -124,8 +125,9 @@ def win_change_time(time_tuple):
 
 # Reset Time Function
 def reset_time():
+    global time_zone_var
     try:
-        timeapi = requests.get("http://worldtimeapi.org/api/timezone/Etc/GMT")
+        timeapi = requests.get(f"http://worldtimeapi.org/api/timezone/{time_zone_var.get()}")
     except Exception:
         messagebox.showwarning(message="You need internet for this")
     else:
@@ -145,11 +147,12 @@ def reset_time():
 # On close
 
 def on_close():
-    global time1, time2, time3, time4
+    global time1, time2, time3, time4, time_zone_var
 #    save_list = []
     save_str = ""
     for time_option in [time1, time2, time3, time4]:
         save_str += (time_option.__str__() + "\n")
+    save_str += time_zone_var.get() + "\n"
     print(save_str)
     with open("change_time_defaults.txt", "w") as defaults_file:
         defaults_file.write(save_str)
@@ -180,7 +183,7 @@ def main():
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
-    global time1, time2, time3, time4
+    global time1, time2, time3, time4, time_zone_var
     time1 = TimeOption(mainframe, padding="12 12 12 12")
     time1.grid(row=0, column=0)
     time2 = TimeOption(mainframe, padding="12 12 12 12")
@@ -198,10 +201,12 @@ def main():
     time_zone_var.set("Etc/GMT")
     time_zone_combo_box = ttk.Combobox(mainframe, textvariable=time_zone_var,
                                             values=list_of_time_zones, state="readonly")
+#    time_zone_combo_box.current(time_zone_combo_box.current())
+#    time_zone_combo_box.set
     time_zone_combo_box.grid(row=3, column=1, columnspan=1)
-    time_zone_combo_box.bind('<<ComboboxSelected>>', lambda e: time_zone_var.set(
-        time_zone_var.get()))
-#    time_zone_combo_box.bind('<<ComboboxSelected>>', lambda e: time_zone_combo_box.selection_clear())
+#    time_zone_combo_box.bind('<<ComboboxSelected>>', lambda e: time_zone_var.set(
+#        time_zone_var.get()))
+    time_zone_combo_box.bind('<<ComboboxSelected>>', lambda e: time_zone_combo_box.selection_clear())
     
     # Set time from defaults
 
@@ -249,6 +254,8 @@ def main():
             # Title
             print(time_string[16:-2])
             time_option.title_var.set(time_string[16:-1])
+        
+        time_zone_var.set(defaults_list[4][:-1]) # Get rid of the new line with [:-1]
 
     root.mainloop()
 

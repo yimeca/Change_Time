@@ -1,6 +1,4 @@
-Add reset time to today for each time_date
-Make calendar ttk
-Change background colour
+Create exe
 Clean up
 Create exe
 Comment
