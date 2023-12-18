@@ -1,4 +1,3 @@
-Create exe
 Clean up
-Create exe
 Comment
+Create exe
